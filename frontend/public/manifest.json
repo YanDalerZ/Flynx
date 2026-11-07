@@ -2,34 +2,28 @@
   "manifest_version": 3,
   "name": "Flynx",
   "version": "1.0.0",
-  "description": "Watch Netflix with friends or partner in sync.",
- "permissions": [
-    "activeTab",
-    "tabs",
-    "scripting",
-    "storage"
-  ],
+  "description": "Watch Netflix with friends or a partner in sync.",
   "host_permissions": [
-    "https://www.netflix.com/*"
+    "https://www.netflix.com/watch/*"
   ],
   "background": {
     "service_worker": "background.js"
   },
   "action": {
     "default_popup": "index.html",
-    "default_title": "SyncFlix Control"
+    "default_title": "Flynx"
   },
   "content_scripts": [
-  {
-    "matches": ["https://www.netflix.com/watch/*"],
-    "js": ["netflix-bridge.js"],
-    "world": "MAIN",
-    "run_at": "document_start"
-  },
-  {
-    "matches": ["https://www.netflix.com/watch/*"],
-    "js": ["content.js"],
-    "run_at": "document_idle"
-  }
-]
+    {
+      "matches": ["https://www.netflix.com/watch/*"],
+      "js": ["netflix-bridge.js"],
+      "world": "MAIN",
+      "run_at": "document_start"
+    },
+    {
+      "matches": ["https://www.netflix.com/watch/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
 }

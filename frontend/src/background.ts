@@ -26,28 +26,13 @@ function connectWs(roomId: string) {
                 if (data.type === 'ROOM_INFO') {
                     userCount = data.count || 1;
                 } else if (data.type === 'ACTION') {
-                    chrome.tabs.query({}, (tabs) => {
-                        tabs.forEach((tab) => {
-                            if (tab.url && tab.url.includes('/watch/') && tab.id) {
-                                chrome.tabs.sendMessage(tab.id, {
-                                    type: 'REMOTE_ACTION',
-                                    action: data.action,
-                                    currentTime: data.currentTime,
-                                });
-                            }
-                        });
+                    sendToNetflixTabs({
+                        type: 'REMOTE_ACTION',
+                        action: data.action,
+                        currentTime: data.currentTime,
                     });
                 } else if (data.type === 'NAVIGATE') {
-                    chrome.tabs.query({}, (tabs) => {
-                        tabs.forEach((tab) => {
-                            if (tab.url && tab.url.includes('/watch/') && tab.id) {
-                                chrome.tabs.sendMessage(tab.id, {
-                                    type: 'NAVIGATE',
-                                    url: data.url,
-                                });
-                            }
-                        });
-                    });
+                    sendToNetflixTabs({ type: 'NAVIGATE', url: data.url });
                 }
             } catch (e) {
                 console.error('Background WS parse error:', e);
@@ -70,7 +55,13 @@ function connectWs(roomId: string) {
         connectionStatus = 'Disconnected';
     }
 }
-
+function sendToNetflixTabs(message: object) {
+    chrome.tabs.query({ url: 'https://www.netflix.com/watch/*' }, (tabs) => {
+        tabs.forEach((tab) => {
+            if (tab.id) chrome.tabs.sendMessage(tab.id, message).catch(() => { });
+        });
+    });
+}
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     if (message.type === 'JOIN_ROOM') {
         connectWs(message.roomId);
