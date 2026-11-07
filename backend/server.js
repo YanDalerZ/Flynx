@@ -38,19 +38,19 @@ wss.on('connection', (ws) => {
     try {
       const data = JSON.parse(message.toString());
 
-      if (data.type === 'JOIN') {
-        const { roomId } = data;
-        currentRoom = roomId;
+     if (data.type === 'JOIN') {
+  const { roomId } = data;
+  currentRoom = roomId;
 
-        if (!rooms.has(roomId)) {
-          rooms.set(roomId, new Set());
-        }
+  if (!rooms.has(roomId)) {
+    rooms.set(roomId, new Set());
+  }
 
-        rooms.get(roomId).add(ws);
-        sendRoomInfo(roomId);
-      } else if (data.type === 'ACTION' && currentRoom) {
-        broadcastToRoom(currentRoom, data, ws);
-      }
+  rooms.get(roomId).add(ws);
+  sendRoomInfo(roomId);
+} else if ((data.type === 'ACTION' || data.type === 'NAVIGATE') && currentRoom) {
+  broadcastToRoom(currentRoom, data, ws);
+}
     } catch (err) {
       console.error('Failed to parse WS message:', err);
     }
