@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "Flynx",
+  "version": "1.0.0",
+  "description": "Watch Netflix with friends or partner in sync.",
+  "permissions": [
+    "activeTab",
+    "tabs",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://www.netflix.com/*"
+  ],
+  "action": {
+    "default_popup": "index.html",
+    "default_title": "SyncFlix Control"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.netflix.com/watch/*"],
+      "js": ["src/content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
